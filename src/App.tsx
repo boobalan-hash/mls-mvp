@@ -1,5 +1,7 @@
 
 import React, { useEffect, useState } from "react";
+import Header from "./components/Header";
+
 
 // Mock MLS Web App (compact) — Buy/Sell/Lease nav with focused tier,
 // leaf-click registration (2 steps, inline ✉️/📱 verify), analyzer modal.
@@ -85,39 +87,22 @@ export default function App(){
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header + focused tier */}
-      <header className="sticky top-0 z-20 backdrop-blur bg-white/80 border-b">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2"><span className="text-xl font-black">myigllo</span><span className="text-xs px-2 py-1 rounded-full bg-indigo-100 text-indigo-700">MVP</span></div>
-          {focus===1 && (
-            <div className="flex gap-2 items-center">
-              <button onClick={()=>{ setMode('buy'); goLevel(2); }} className={`px-3 py-1 rounded-full text-sm border ${mode==='buy'? 'bg-indigo-600 text-white':'bg-white'}`}>Buy</button>
-              <button onClick={()=>{ setMode('sell'); goLevel(1); if(!isRegistered) openRegWithContext({ mode:'sell', leaf:'sell' }); }} className={`px-3 py-1 rounded-full text-sm border ${mode==='sell'? 'bg-indigo-600 text-white':'bg-white'}`}>Sell</button>
-              <button onClick={()=>{ setMode('lease'); goLevel(2); }} className={`px-3 py-1 rounded-full text-sm border ${mode==='lease'? 'bg-indigo-600 text-white':'bg-white'}`}>Lease</button>
-            </div>
-          )}
-          {focus===2 && mode==='buy' && (
-            <div className="flex items-center gap-2">
-              <button onClick={back} className="px-3 py-1 rounded-full border text-sm">← Back</button>
-              <button onClick={()=>{ setBuySub('primary'); goLevel(2); if(!isRegistered) openRegWithContext({ mode:'buy', leaf:'primary' }); }} className={`px-3 py-1 rounded-full text-sm border ${buySub==='primary'? 'bg-gray-900 text-white':'bg-white'}`}>Primary Residence</button>
-              <button onClick={()=>{ setBuySub('investment'); goLevel(3); }} className={`px-3 py-1 rounded-full text-sm border ${buySub==='investment'? 'bg-gray-900 text-white':'bg-white'}`}>Investment</button>
-            </div>
-          )}
-          {focus===2 && mode==='lease' && (
-            <div className="flex items-center gap-2">
-              <button onClick={back} className="px-3 py-1 rounded-full border text-sm">← Back</button>
-              <button onClick={()=>{ setLeaseSub('tenant'); if(!isRegistered) openRegWithContext({ mode:'lease', leaf:'tenant' }); }} className={`px-3 py-1 rounded-full text-sm border ${leaseSub==='tenant'? 'bg-gray-900 text-white':'bg-white'}`}>Tenant</button>
-              <button onClick={()=>{ setLeaseSub('landlord'); if(!isRegistered) openRegWithContext({ mode:'lease', leaf:'landlord' }); }} className={`px-3 py-1 rounded-full text-sm border ${leaseSub==='landlord'? 'bg-gray-900 text-white':'bg-white'}`}>Landlord</button>
-            </div>
-          )}
-          {focus===3 && mode==='buy' && buySub==='investment' && (
-            <div className="flex items-center gap-2">
-              <button onClick={back} className="px-3 py-1 rounded-full border text-sm">← Back</button>
-              <button onClick={()=>{ setInvestmentSub('cashflow'); if(!isRegistered) openRegWithContext({ mode:'buy', leaf:'investment_cashflow' }); }} className={`px-3 py-1 rounded-full text-sm border ${investmentSub==='cashflow'? 'bg-emerald-600 text-white':'bg-white'}`}>Cash Flow</button>
-              <button onClick={()=>{ setInvestmentSub('appreciation'); if(!isRegistered) openRegWithContext({ mode:'buy', leaf:'investment_appreciation' }); }} className={`px-3 py-1 rounded-full text-sm border ${investmentSub==='appreciation'? 'bg-indigo-600 text-white':'bg-white'}`}>Appreciation</button>
-            </div>
-          )}
-        </div>
-      </header>
+	<Header
+  focus={focus}
+  mode={mode}
+  buySub={buySub}
+  leaseSub={leaseSub}
+  investmentSub={investmentSub}
+  isRegistered={isRegistered}
+  goLevel={goLevel}
+  onBack={back}
+  onSetMode={setMode}
+  onSetBuySub={setBuySub}
+  onSetLeaseSub={setLeaseSub}
+  onSetInvestmentSub={setInvestmentSub}
+  onOpenRegCtx={openRegWithContext}
+/>
+
 
       {/* Cards */}
       <main className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
