@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import ListingCard from "./components/ListingCard";
+import AnalyzerModal from "./components/AnalyzerModal";
 
 
 // Mock MLS Web App (compact) — Buy/Sell/Lease nav with focused tier,
@@ -131,66 +132,16 @@ export default function App() {
 
       {/* Analyzer Modal */}
       {analyzeFor && (
-        <div className="fixed inset-0 z-30">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setAnalyzeFor(null)} />
-          <div className="relative z-10 max-w-3xl mx-auto my-8 bg-white rounded-2xl shadow-xl border">
-            <div className="p-4 border-b flex items-start justify-between">
-              <div>
-                <div className="text-lg font-semibold">Deal Analyzer</div>
-                <div className="text-xs text-gray-500">{analyzeFor.address}, {analyzeFor.city} · MLS {analyzeFor.mls}</div>
-              </div>
-              <button className="px-3 py-1 rounded-lg border" onClick={() => setAnalyzeFor(null)}>Close</button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-              <div className="space-y-3">
-                <div className="text-xs font-semibold uppercase text-gray-500">Deal Inputs</div>
-                <LabeledNumber label="Purchase Price" value={calc.price} onChange={(v: number) => setCalc({ ...calc, price: v })} />
-                <div className="grid grid-cols-3 gap-2">
-                  <LabeledNumber label="Down %" value={calc.down} onChange={(v: number) => setCalc({ ...calc, down: v })} />
-                  <LabeledNumber label="Rate %" value={calc.rate} onChange={(v: number) => setCalc({ ...calc, rate: v })} />
-                  <LabeledNumber label="Years" value={calc.amort} onChange={(v: number) => setCalc({ ...calc, amort: v })} />
-                </div>
-                <div className="text-xs font-semibold uppercase text-gray-500 pt-2">Income (Monthly)</div>
-                <LabeledNumber label="Rent" value={calc.rent} onChange={(v: number) => setCalc({ ...calc, rent: v })} />
-                <div className="grid grid-cols-3 gap-2">
-                  <LabeledNumber label="Parking" value={calc.parking} onChange={(v: number) => setCalc({ ...calc, parking: v })} />
-                  <LabeledNumber label="Laundry" value={calc.laundry} onChange={(v: number) => setCalc({ ...calc, laundry: v })} />
-                  <LabeledNumber label="Misc" value={calc.misc} onChange={(v: number) => setCalc({ ...calc, misc: v })} />
-                </div>
-                <div className="text-xs font-semibold uppercase text-gray-500 pt-2">Expenses (Monthly)</div>
-                <div className="grid grid-cols-3 gap-2">
-                  <LabeledNumber label="Taxes" value={calc.taxes} onChange={(v: number) => setCalc({ ...calc, taxes: v })} />
-                  <LabeledNumber label="Insurance" value={calc.insurance} onChange={(v: number) => setCalc({ ...calc, insurance: v })} />
-                  <LabeledNumber label="Utilities" value={calc.utilities} onChange={(v: number) => setCalc({ ...calc, utilities: v })} />
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <LabeledNumber label="Maint %" value={calc.maintenancePct} onChange={(v: number) => setCalc({ ...calc, maintenancePct: v })} />
-                  <LabeledNumber label="Mgmt %" value={calc.mgmtPct} onChange={(v: number) => setCalc({ ...calc, mgmtPct: v })} />
-                  <LabeledNumber label="Vacancy %" value={calc.vacancyPct} onChange={(v: number) => setCalc({ ...calc, vacancyPct: v })} />
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div className="text-xs font-semibold uppercase text-gray-500">Results</div>
-                <KV label="NOI (Monthly)" value={money(Math.round(noiMonthly))} />
-                <KV label="Debt Service (Monthly)" value={money(Math.round(debtMonthly))} />
-                <KV label="Cash Flow After Debt" value={money(Math.round(cashMonthly))} emphasis={cashMonthly >= 0 ? 'good' : 'bad'} />
-                <div className="grid grid-cols-2 gap-2">
-                  <KV label="NOI (Annual)" value={money(Math.round(noiMonthly * 12))} />
-                  <KV label="Debt (Annual)" value={money(Math.round(debtMonthly * 12))} />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <KV label="DSCR" value={dscr ? dscr.toFixed(2) : '—'} emphasis={dscr && dscr >= 1.2 ? 'good' : dscr && dscr < 1 ? 'bad' : undefined} />
-                  <KV label="Cap Rate" value={capRate ? capRate.toFixed(2) + '%' : '—'} />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <KV label="Avg Principal (mo, 5yr)" value={money(Math.round(avgPrin))} />
-                  <KV label="Cap w/ Repayment" value={capWithRepay ? capWithRepay.toFixed(2) + '%' : '—'} />
-                </div>
-                <div className="text-[11px] text-gray-500">Estimates only.</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AnalyzerModal
+          listing={analyzeFor}
+          calc={calc}
+          setCalc={setCalc}
+          onClose={() => setAnalyzeFor(null)}
+          money={money}
+          pct={pct}
+          monthlyPayment={monthlyPayment}
+          avgMonthlyPrincipalFirstYears={avgMonthlyPrincipalFirstYears}
+        />
       )}
 
       {/* Registration Modal */}
